@@ -70,3 +70,43 @@ test=total.iloc[testindex,:]
 train=total.iloc[trainindex,:]
 
 # Now export train and test for future use 
+train =pd.read_csv("train.csv",header=0)
+test =pd.read_csv("test.csv",header=0)
+
+
+train.week_start_date=pd.to_datetime(train.week_start_date)
+test.week_start_date=pd.to_datetime(test.week_start_date)
+
+# import train and test
+
+
+sjtrain=train.loc[train.city=='sj',:]
+iqtrain=train.loc[train.city!='sj',:]
+iqtest=test.loc[test.city=='iq',:]
+sjtest=test.loc[test.city=='sj',:]
+
+
+#make my data time series index it wid date
+
+dcols=sjtrain.columns
+dcols=dcols.drop('week_start_date')
+dcols=dcols.drop(labels=['city','year','weekofyear','month'])
+
+
+sjtrain.index=sjtrain.week_start_date
+iqtrain.index=iqtrain.week_start_date
+iqtest.index=iqtest.week_start_date
+sjtest.index=sjtest.week_start_date
+
+sjtrain.drop(labels=['city','year','weekofyear','month'],axis=1,inplace=True)
+iqtrain.drop(labels=['city','year','weekofyear','month'],axis=1,inplace=True)
+iqtest.drop(labels=['city','year','weekofyear','month'],axis=1,inplace=True)
+sjtest.drop(labels=['city','year','weekofyear','month'],axis=1,inplace=True)
+
+
+
+
+model.from_formula('total_cases ~ airt+avgt+dewt+diurt+maxt+mint+precip+rhum',data=sjtrain2).fit()
+
+endog1=sjtrain['total_cases']
+exog1=sjtrain.iloc[:,[1,2,3,4,5,6,7,8]]
